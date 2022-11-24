@@ -1,0 +1,24 @@
+{
+  "name": "proyectofinalbk",
+  "version": "1.0.0",
+  "description": "Primer entrega del proyecto final del curso Backend de Coderhouse",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IonFiz/ProyectoFinalBK.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IonFiz/ProyectoFinalBK/issues"
+  },
+  "homepage": "https://github.com/IonFiz/ProyectoFinalBK#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.5.4"
+  }
+}

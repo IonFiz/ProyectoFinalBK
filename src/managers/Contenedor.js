@@ -1,95 +1,80 @@
 const fs = require('fs');
-const path = require('path');
+const path =  require('path');
 
 class Contenedor {
 
-    constructor(filename) {
-        this.filename = path.join(__dirname, "..", `files/${filename}`);
+    constructor(filename){
+        this.filename = path.join(__dirname,"..", `files/${filename}`);
     }
 
-    async save(product) {
-
-        try {
+    async save(product){
+        
+        try{
             const products = await this.getAll();
-
-            if (products.length > 0) {
-                const lastId = products[products.length - 1].id + 1;
+            if(products.length>0){
+                const lastId = products[products.length-1].id + 1;
                 product.id = lastId;
-                product.timestamp = Date.now();
-                product.code = Math.random().toString(24).substring(7);
+                console.log(product.id);
                 products.push(product);
                 await fs.promises.writeFile(this.filename, JSON.stringify(products, null, 2));
-            } else {
-                product.id = 1;
-                product.timestamp = Date.now();
-                product.code = Math.random().toString(24).substring(7);
+            }else{
+                product.id =  1;
                 await fs.promises.writeFile(this.filename, JSON.stringify([product], null, 2));
             }
+            
 
-
-        } catch (err) {
+        } catch(err){
             console.log(err);
         }
     }
 
-    async overwrite(product) {
-        try {
-            const products = await this.getAll();
-            products.push(product);
-            await fs.promises.writeFile(this.filename, JSON.stringify(products, null, 2));
+    async getById(id){
+        try{
+        const products = await this.getAll();
 
-        } catch (err) {
+        let item = products.find( product => product.id === id );
+        return item;
+
+        } catch (err){
             console.log(err);
         }
+        
     }
 
-    async getById(id) {
-        try {
-            const products = await this.getAll();
+    async getAll(){
 
-            let item = products.find(product => product.id === id);
-            return item;
-
-        } catch (err) {
-            console.log(err);
-        }
-
-    }
-
-    async getAll() {
-
-        try {
+        try{
             const content = await fs.promises.readFile(this.filename, 'utf-8');
-            if (content.length > 0) {
+            if(content.length > 0){
                 let array = JSON.parse(content);
                 return array;
-            } else {
+            }else{
                 return [];
             }
-
+            
         }
-        catch (err) {
+        catch(err){
             return "Cannot read file";
         }
 
 
     }
 
-    async deleteById(id) {
-        try {
+    async deleteById(id){
+        try{
             const products = await this.getAll();
-
+    
             const newProducts = products.filter(product => product.id !== id);
             console.log('Deleted product successfully');
-
+    
             await fs.promises.writeFile(this.filename, JSON.stringify(newProducts, null, 2));
-        } catch (err) {
-            return console.log(err);
-        }
+            } catch (err){
+                return console.log(err);
+            }
     }
 
-    async deleteAll() {
-        try {
+    async deleteAll(){
+        try{
             let content = await fs.promises.readFile(this.filename, 'utf-8');
 
             content = [];
@@ -98,14 +83,14 @@ class Contenedor {
 
             await fs.promises.writeFile(this.filename, JSON.stringify(content, null, 2))
         }
-        catch (err) {
+        catch(err){
             console.log("Error", err);
         }
     }
-
-    async getRandom() {
+    
+    async getRandom(){
         const products = await this.getAll();
-        let item = products[Math.floor(Math.random() * products.length)];
+        let item = products[Math.floor(Math.random()*products.length)];
         return item;
     }
 }

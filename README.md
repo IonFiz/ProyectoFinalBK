@@ -1,3 +1,3 @@
 # CoderHouse Backend
 
-Septimo desafio del curso Backend en CoderHouse
+Segunda entrega del proyecto final del curso Backend de Coderhouse

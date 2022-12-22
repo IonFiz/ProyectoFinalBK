@@ -1,46 +1,38 @@
-const express = require('express');
-const { options } = require("../config/databaseConfig");
-const { ContenedorSQL } = require("../managers/ContenedorSql");
+import express from "express";
+import { checkAdminRole } from "../middlewares/checkRole.js";
+import { ContenedorDaoProductos } from "../daos/index.js";
 
-const router = express.Router();
+const productosApi = ContenedorDaoProductos;
 
-const productosApi = new ContenedorSQL(options.mariaDB, "productos");
+// products router
+const productsRouter = express.Router();
 
-router.get('/', async (req, res) => {
-    const productos = await productosApi.getAll();
-    res.send(productos);
+productsRouter.get('/', async (req, res) => {
+    const response = await productosApi.getAll();
+    res.json(response)
 })
 
-router.get('/:id', async (req, res) => {
+productsRouter.get('/:id', async (req, res) => {
+    const productId = parseInt(req.params.id);
+    const response = await productosApi.getById(productId);
+    res.json(response);
+})
+
+productsRouter.post('/', checkAdminRole, async (req, res) => {
+    const response = await productosApi.save(req.body);
+    res.json(response)
+})
+
+productsRouter.put('/:id', checkAdminRole, async (req, res) => {
+    const productId = parseInt(req.params.id);
+    const response = await productosApi.updateById(req.body, productId);
+    res.json(response);
+})
+
+productsRouter.delete('/:id', checkAdminRole, async (req, res) => {
     const productId = req.params.id;
-    const product = await productosApi.getById(parseInt(productId));
-    if (product) {
-        return res.send(product)
-    } else {
-        return res.send({ error: 'producto no encontrado' })
-    }
+    const response = await productosApi.deleteById(productId);
+    res.json(response);
 })
 
-router.post('/', async (req, res) => {
-    const newProduct = req.body;
-    const result = await productosApi.save(newProduct);
-    res.send(result);
-})
-
-router.put('/:id', async (req, res) => {
-    //No puedo hacer que el PUT tome los  parametros del body y haga el cambio
-    const { title, price, thumbnail } = req.body;
-    const productId = req.params.id;
-    const result = await productosApi.updateById(parseInt(productId), title, price, thumbnail);
-    //const result = await productosApi.updateById(parseInt(productId));
-    res.json({ result });
-})
-
-router.delete('/:id', async (req, res) => {
-    const productId = req.params.id;
-    const result = await productosApi.deleteById(parseInt(productId));
-    res.send(result);
-})
-
-
-module.exports = { productsRouter: router };
+export { productsRouter }

@@ -1,3 +1,2 @@
-# CoderHouse Backend
+# Desafío de la clase 36 
 
-Segunda entrega del proyecto final del curso Backend de Coderhouse
